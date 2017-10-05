@@ -2,13 +2,15 @@
   <div class="app">
     <!-- <image class="img" :src="src"></image> -->
     <!-- <hello></hello> -->
-    <learn></learn>
+    <!-- <learn></learn> -->
+    <namer></namer>
   </div>
 </template>
 
 <script>
 import Hello from './components/Hello.vue'
 import Learn from './components/Learn.vue'
+import Namer from './components/Namer.vue'
 
 export default {
   name: 'app',
@@ -20,13 +22,14 @@ export default {
   components: {
     Hello,
     Learn,
+    Namer,
   }
 }
 </script>
 
 <style scoped>
 .app {
-  align-items: center;
+  /* align-items: center; */
   /* padding-top: 200px; */
 }
 

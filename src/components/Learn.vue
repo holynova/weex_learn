@@ -5,6 +5,8 @@
     <text class="h2">learn 组件</text>
     <text>{{title}}</text>
     <text>{{now}}</text>
+    <text>{{number}}</text>
+
     <text class="cnt" @click="onClick" @longpress="onLongpress">{{cnt}}</text>
 
   </div>
@@ -13,26 +15,29 @@
 <script>
 import moment from 'moment'
 const log = console.log
+
 export default {
   name: 'learn',
-  data: () => {
+  data: function() {
     return {
       title: 'the quick brown fox jumps over a lazy dog',
       cnt: 0,
     }
   },
   computed: {
-    now: () => {
+    now: function() {
       return moment().format('YYYY-MM-DD HH:mm:ss')
+    },
+    number: function() {
+      return 123
     }
   },
   methods: {
-    onClick: () => {
+    onClick: function() {
       log('click')
-      // log($this)
-      // this.data.cnt += 1
+      this.cnt += 1
     },
-    onLongpress: () => {
+    onLongpress: function() {
       this.cnt += 10
     }
   }
