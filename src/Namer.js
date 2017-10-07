@@ -10,27 +10,30 @@ class Namer {
     const index = Math.floor(Math.random() * arr.length)
     return arr[index]
   }
-  randInt(max) {
-
-  }
 
   //前开后闭区间
   randBetween(min, max) {
     return Math.floor(Math.random() * (max - min)) + min
   }
 
-  getName() {
+  getName(familyName = '') {
     //获取一首诗
     const poem = this.randPoem()
     //获取这首诗中的一句
-    const sentence = this.randSentence(poem)
-    this.name = this.randName(sentence)
-    log('name = ', name)
-    // return this.name
-    //从一句中取出两个字
-    // 返回完整姓名和来源
+    let name = ''
+    let sentence = ""
+    do {
+      sentence = this.randSentence(poem)
+      name = this.randName(sentence)
+    } while (!name)
+
+    // if (name[0] === name[1]) {
+    log(`name = ${name}  sentence = ${sentence}`)
+    // }
+    // log('name = ', name)
+
     return {
-      name: this.name,
+      name: familyName + name,
       sentence,
       ...poem,
     }
@@ -42,35 +45,53 @@ class Namer {
     } while (!poem.content)
     return poem;
   }
+  formatStr(str) {
+    let notEndMark = /[，,、：:；;“”‘'（）()《》〈〉【】『』「」﹃﹄〔〕—～﹏￥]/g
+    // 文言文虚词
+    // let virtualCharsHigh = /[而乎乃其且所也以因于与则者之]/g
+    let virtualChars = /[而何乎乃其且若所为焉也以因于与则者之矣]/g
+    let badChars = /[鸡狗猪鬼舅鸟死亡卒匪羔羊母尸愁旧饥饿瓜氓]/g
+    let otherChars = /[不女兮我狂]/g
+
+    str = str.replace(notEndMark, '')
+      .replace(virtualChars, '')
+      .replace(badChars, '')
+      .replace(otherChars, '')
+    return str.length > 2 ? str : false
+  }
+
   randName(str, num = 2) {
-    let indexArr = []
-    for (let i = 0; i < num; i++) {
-      indexArr.push(this.randBetween(0, str.length))
+    str = this.formatStr(str)
+    if (str) {
+      let numArr = []
+      for (let i = 0; i < str.length; i++) {
+        numArr.push(i)
+      }
+
+      let indexArr = []
+
+      for (let i = 0; i < num; i++) {
+        let index = numArr.splice(this.randBetween(0, numArr.length), 1)
+        indexArr.push(index)
+        // indexArr.push(this.randBetween(0, str.length))
+      }
+      // log(indexArr)
+      indexArr = indexArr.sort((a, b) => (a - b))
+      let charArr = indexArr.map(i => str.charAt(i))
+      return charArr.join('')
     }
-    log(indexArr)
-    indexArr = indexArr.sort((a, b) => (a - b))
-    let charArr = indexArr.map(i => str.charAt(i))
-    return charArr.join('')
   }
 
   randSentence(poem) {
-    log('poem = ', poem)
+    // log('poem = ', poem)
     let { content } = poem
-    let notEndMark = /[，,、：:“”‘'（）()《》〈〉【】『』「」﹃﹄〔〕—～﹏￥]/g
-    let endMark = /[。.？?！!；;…]/g
-    // 文言文虚词
-    // let virtualCharsHigh = /[而乎乃其且所也以因于与则者之]/g
-    let virtualChars = /[而何乎乃其且若所为焉也以因于与则者之]/g
-    // 含义好的词
-    let badChars = ``
-
+    // let notEndMark = /[，,、：:；;“”‘'（）()《》〈〉【】『』「」﹃﹄〔〕—～﹏￥]/g
+    let endMark = /[。.？?！!…]/g
     let sentences = content.replace(/[<>a-zA-Z0-9/]/g, '')
       .replace(/\s/g, '')
-      .replace(notEndMark, '')
-      .replace(virtualChars, '')
       .split(endMark)
       .filter(s => (s.length > 0))
-    log(sentences)
+    // log(sentences)
     return this.randChoose(sentences)
   }
 

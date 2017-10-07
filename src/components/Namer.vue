@@ -1,29 +1,40 @@
 <template>
   <div class="wrapper">
-    <text class='h1'>
-      你的名字:古诗文起名
-    </text>
+    <text class='h1'>你的名字:古诗文起名</text>
 
-    <div class="btn" @click="pickBook">选择书籍 </div>
+    <text>输入姓氏</text>
+    <input class='input' type="text" placeholder="输入姓氏" :autofocus=true value="李" @input='handleInput' />
+
+    <div class="btn" @click="pickBook">选择典籍</div>
     <text class="book">{{book}}</text>
     <div class="btn" @click="genName">生成姓名</div>
     <!-- <text>姓名:{{name}}</text> -->
-    <div class="names">
-      <!-- <text repeat={{name in names}}>{{JSON.stringify(name,false,2)}}</text> -->
-      <div v-for="name in names" :key='name.name'>
-
-        <!-- <text v-for="name in names" :key='name.name'>{{name.name}}</text> -->
+    <list class="names">
+      <cell v-for=" name in names" :key="name.name">
+        <name-box :data='name'></name-box>
         <!-- <text>{{name.name}}</text> -->
-        <name-box v-bind:data='name'></name-box>
-      </div>
-    </div>
+      </cell>
+    </list>
   </div>
 </template>
 
 <style scoped>
 .wrapper {
-  background: #ccc;
+  padding: 25px;
+  /* background: #ccc; */
 }
+
+
+.input {
+  background-color: #eee;
+  font-size: 30px;
+  /* height: 30px; */
+  /* padding: 5px; */
+}
+
+
+
+
 
 .h1 {
   font-size: 30px;
@@ -36,13 +47,18 @@
   border-width: 1px;
   border-color: black;
   /* display: inline; */
-  padding-top: 30px;
-  padding-bottom: 30px;
+  padding-top: 10px;
+  padding-bottom: 10px;
 }
 
 .book {
   width: 375px;
   /* display: inline; */
+}
+
+.names {
+  height: 1134px;
+  background-color: #f60;
 }
 </style>
 
@@ -54,7 +70,7 @@ import Namer from '../Namer.js'
 import NameBox from './NameBox.vue'
 
 const picker = weex.requireModule('picker')
-const log = () => { }
+const log = console.log
 
 
 export default {
@@ -66,6 +82,8 @@ export default {
       value: 1,
       name: '',
       names: [],
+      arr: '我的未来不是梦'.split(''),
+      familyName: '李'
     }
   },
   components: { NameBox },
@@ -84,7 +102,7 @@ export default {
     },
     //----------------------
     genName: function(event, num = 5) {
-      log(num)
+      // log(num)
       // let poem = utils.rand.choose(shijing)
       // let sentences = poem.content.split(/<p>|<br>/g)
       // log(poem)
@@ -93,17 +111,19 @@ export default {
       let names = []
       let n = new Namer(book)
       for (let i = 0; i < num; i++) {
-        let nameObj = n.getName()
+        let nameObj = n.getName(this.familyName)
         // log('nameObj', nameObj)
         // let nameObj = JSON.stringify(sentences, false, 2)
         names.push(nameObj)
       }
       this.names = names
-      // log(JSON.stringify(names, false, 2))
+      log(JSON.stringify(names, false, 2))
       return names
     },
     //----------------------
-
+    handleInput: function(event) {
+      this.familyName = event.value
+    }
 
   }
 }

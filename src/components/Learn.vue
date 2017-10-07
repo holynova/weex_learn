@@ -1,71 +1,57 @@
-
 <template>
-  <div class="wrapper">
-    <text class="h1">hello world</text>
-    <text class="h2">learn 组件</text>
-    <text>{{title}}</text>
-    <text>{{now}}</text>
-    <text>{{number}}</text>
-
-    <text class="cnt" @click="onClick" @longpress="onLongpress">{{cnt}}</text>
-
-  </div>
+  <!-- <list class="list" @loadmore="fetch" loadmoreoffset="10"> -->
+  <list class="list">
+    <cell class="cell" v-for="num in lists">
+      <div class="panel">
+        <text class="text">{{num}}</text>
+      </div>
+    </cell>
+  </list>
 </template>
 
 <script>
-import moment from 'moment'
-const log = console.log
+const modal = weex.requireModule('modal')
+const LOADMORE_COUNT = 4
 
 export default {
-  name: 'learn',
-  data: function() {
+  data() {
     return {
-      title: 'the quick brown fox jumps over a lazy dog',
-      cnt: 0,
-    }
-  },
-  computed: {
-    now: function() {
-      return moment().format('YYYY-MM-DD HH:mm:ss')
-    },
-    number: function() {
-      return 123
+      lists: [1, 2, 3, 4, 5]
     }
   },
   methods: {
-    onClick: function() {
-      log('click')
-      this.cnt += 1
-    },
-    onLongpress: function() {
-      this.cnt += 10
+    fetch(event) {
+      modal.toast({ message: 'loadmore', duration: 1 })
+
+      setTimeout(() => {
+        const length = this.lists.length
+        for (let i = length; i < length + LOADMORE_COUNT; ++i) {
+          this.lists.push(i + 1)
+        }
+      }, 800)
     }
   }
 }
 </script>
 
 <style scoped>
-.wrapper {
-  width: 750px;
-  /* text-align: center; */
-  /* align-items: center; */
-  background-color: #eee;
+.panel {
+  width: 600px;
+  height: 250px;
+  margin-left: 75px;
+  margin-top: 35px;
+  margin-bottom: 35px;
+  flex-direction: column;
+  justify-content: center;
+  border-width: 2px;
+  border-style: solid;
+  border-color: rgb(162, 217, 192);
+  background-color: rgba(162, 217, 192, 0.2);
 }
 
-.h1 {
-  font-size: 20px;
-  font-weight: bold;
-}
-
-.h2 {
-  font-size: 16px;
-  font-weight: bold;
-}
-
-.cnt {
-  width: 300px;
-  height: 300px;
-  background-color: #f60;
-  font-size: 150px;
+.text {
+  font-size: 50px;
+  text-align: center;
+  color: #41B883;
 }
 </style>
